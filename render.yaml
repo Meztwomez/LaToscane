@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: restaurant-caisse-demo
+    runtime: static
+    buildCommand: ""
+    staticPublishPath: .
+    autoDeployTrigger: commit
