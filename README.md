@@ -1,19 +1,13 @@
-# Caisse Restaurant Locale
+# La Toscane
 
-Application de caisse locale pour un seul restaurant.
+Page statique hebergeant une video MP4.
 
-## Demo web
+## Fichiers principaux
 
-Cette version est une application statique : elle fonctionne directement dans le navigateur avec `index.html`, `styles.css` et `app.js`.
+- `index.html` : page de lecture video
+- `faire-part.mp4` : video affichee sur la page
+- `render.yaml` : configuration Render Static Site
 
-Les donnees sont stockees localement dans le navigateur de l'utilisateur via `localStorage` et IndexedDB.
+## Deploiement
 
-## Deploiement Render
-
-Le fichier `render.yaml` configure un Static Site Render :
-
-- `runtime: static`
-- `staticPublishPath: .`
-- aucun build requis
-
-Render redeploie automatiquement a chaque push sur la branche configuree.
+Le site est publie sur Render depuis ce depot GitHub.
