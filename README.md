@@ -1,11 +1,11 @@
 # La Toscane
 
-Page statique hebergeant une video MP4.
+Page statique affichant une video MP4 integree dans `index.html`.
 
 ## Fichiers principaux
 
-- `index.html` : page de lecture video
-- `faire-part.mp4` : video affichee sur la page
+- `index.html` : page de lecture video avec la video integree en base64
+- `faire-part.mp4` : source locale de la video
 - `render.yaml` : configuration Render Static Site
 
 ## Deploiement
