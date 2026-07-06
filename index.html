@@ -3,295 +3,69 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Caisse Restaurant Locale</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>La Toscane</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: #080808;
+        color: #fff;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        min-height: 100%;
+        background: #080808;
+      }
+
+      body {
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        padding: clamp(0.75rem, 2vw, 1.5rem);
+      }
+
+      main {
+        width: min(100%, 1100px);
+        display: grid;
+        gap: 1rem;
+      }
+
+      video {
+        width: 100%;
+        max-height: calc(100vh - 3rem);
+        display: block;
+        border-radius: 8px;
+        background: #000;
+        box-shadow: 0 18px 50px rgba(0, 0, 0, 0.42);
+      }
+
+      .fallback {
+        margin: 0;
+        color: rgba(255, 255, 255, 0.72);
+        font-size: 0.95rem;
+        text-align: center;
+      }
+
+      .fallback a {
+        color: #fff;
+      }
+    </style>
   </head>
   <body>
-    <div class="app-shell">
-      <aside class="floor">
-        <div class="brand">
-          <div>
-            <p class="eyebrow">Caisse locale</p>
-            <h1 id="brandName">Le Comptoir</h1>
-          </div>
-          <button class="icon-button" id="settingsButton" title="Parametres" aria-label="Parametres">⚙</button>
-        </div>
-
-        <div class="metrics" aria-label="Indicateurs du service">
-          <div>
-            <span id="openTablesCount">0</span>
-            <small>tables ouvertes</small>
-          </div>
-          <div>
-            <span id="dayTotal">0,00 €</span>
-            <small>encaisse aujourd'hui</small>
-          </div>
-        </div>
-
-        <div class="table-toolbar">
-          <h2>Salle</h2>
-          <div class="toolbar-actions">
-            <button id="editTableButton">✎ Table</button>
-            <button id="addTableButton">+ Table</button>
-          </div>
-        </div>
-        <div class="zone-tabs" id="zoneTabs" aria-label="Zones de salle"></div>
-        <div class="tables" id="tablesList"></div>
-      </aside>
-
-      <main class="register">
-        <header class="topbar">
-          <div>
-            <p class="eyebrow" id="serviceLabel">Service du jour</p>
-            <h2 id="currentTableTitle">Choisir une table</h2>
-          </div>
-          <div class="topbar-actions">
-            <button id="reportButton">📊 Rapport</button>
-            <button id="exportCsvButton">📄 CSV</button>
-            <button id="exportButton">💾 Exporter</button>
-            <label class="file-button">
-              📥 Importer
-              <input type="file" id="importInput" accept="application/json">
-            </label>
-          </div>
-        </header>
-
-        <nav class="service-tabs" id="viewTabs" aria-label="Vues du service">
-          <button class="selected" data-view="menu">🍽️ Menu</button>
-          <button data-view="kitchen">👨‍🍳 Cuisine</button>
-          <button data-view="sales">💶 Ventes</button>
-        </nav>
-
-        <section class="catalog view-panel" id="menuPanel">
-          <div class="search-row">
-            <label>Recherche produit
-              <input id="productSearch" type="search" autocomplete="off" placeholder="Cafe, burger, dessert...">
-            </label>
-          </div>
-          <div class="category-tabs" id="categoryTabs"></div>
-          <div class="products" id="productsGrid"></div>
-        </section>
-
-        <section class="service-panel view-panel" id="kitchenPanel" hidden>
-          <div class="panel-head">
-            <div>
-              <p class="eyebrow">Production</p>
-              <h2>Commandes cuisine</h2>
-            </div>
-          </div>
-          <div class="kitchen-list" id="kitchenList"></div>
-        </section>
-
-        <section class="service-panel view-panel" id="salesPanel" hidden>
-          <div class="panel-head">
-            <div>
-              <p class="eyebrow">Cloture</p>
-              <h2>Ventes du jour</h2>
-            </div>
-            <button id="newServiceButton">🔄 Nouveau service</button>
-          </div>
-          <div class="cash-close">
-            <label>Fond de caisse
-              <input id="openingFloatInput" type="number" min="0" step="0.01">
-            </label>
-            <label>Especes comptees
-              <input id="cashCountedInput" type="number" min="0" step="0.01">
-            </label>
-            <button id="closeCashButton">🔐 Cloturer</button>
-          </div>
-          <div class="report-grid" id="dayReport"></div>
-          <div class="sales-list" id="salesList"></div>
-          <div class="sales-list" id="cancellationsList"></div>
-        </section>
-      </main>
-
-      <aside class="ticket">
-        <div class="ticket-head">
-          <div>
-            <p class="eyebrow">Ticket</p>
-            <h2 id="ticketTitle">Aucune table</h2>
-          </div>
-          <button class="icon-button danger" id="clearOrderButton" title="Vider" aria-label="Vider">×</button>
-        </div>
-
-        <div class="order-lines" id="orderLines"></div>
-
-        <div class="ticket-bottom">
-          <div class="totals">
-            <div><span>Sous-total</span><strong id="subtotal">0,00 €</strong></div>
-            <div><span>Remise</span><strong id="discountTotal">0,00 €</strong></div>
-            <div><span>TVA estimee</span><strong id="tax">0,00 €</strong></div>
-            <div class="grand-total"><span>Total</span><strong id="total">0,00 €</strong></div>
-          </div>
-
-          <div class="ticket-tools">
-            <label>Remise %
-              <input id="discountInput" type="number" min="0" max="100" step="1" value="0">
-            </label>
-            <label>Transferer
-              <select id="transferSelect"></select>
-            </label>
-            <button id="transferButton">↔️ Deplacer</button>
-            <button id="mergeTableButton">🔗 Fusionner ici</button>
-          </div>
-
-          <div class="payment-methods" role="group" aria-label="Mode de paiement">
-            <button class="selected" data-payment="Carte">💳 Carte</button>
-            <button data-payment="Especes">💵 Especes</button>
-            <button data-payment="Ticket resto">🎟️ Ticket resto</button>
-          </div>
-
-          <div class="payment-split" aria-label="Paiement fractionne">
-            <div class="payment-entry">
-              <label>Montant
-                <input id="paymentAmountInput" type="number" min="0" step="0.01" placeholder="0,00">
-              </label>
-              <button id="fillRemainingButton">Reste</button>
-              <button id="addPaymentButton">Ajouter</button>
-            </div>
-            <div class="payment-list" id="paymentList"></div>
-            <div class="payment-summary" id="paymentSummary"></div>
-          </div>
-
-          <div class="ticket-actions">
-            <button id="holdButton">👨‍🍳 Envoyer</button>
-            <button id="previewReceiptButton">🧾 Apercu</button>
-            <button class="primary" id="payButton">✅ Encaisser</button>
-          </div>
-        </div>
-      </aside>
-    </div>
-
-    <dialog id="settingsDialog">
-      <form method="dialog" class="dialog-card">
-        <header>
-          <div>
-            <p class="eyebrow">Parametres locaux</p>
-            <h2>Menu et salle</h2>
-          </div>
-          <button class="icon-button" value="cancel" aria-label="Fermer">×</button>
-        </header>
-
-        <div class="settings-grid">
-          <section>
-            <h3>Restaurant</h3>
-            <label>Nom de l'etablissement<input id="restaurantNameInput" autocomplete="off"></label>
-            <button type="button" id="saveRestaurantButton">Enregistrer</button>
-          </section>
-
-          <section>
-            <h3>Ajouter un produit</h3>
-            <label>Nom<input id="productName" autocomplete="off"></label>
-            <label>Prix<input id="productPrice" type="number" min="0" step="0.10"></label>
-            <label>Categorie<input id="productCategory" list="categoryList" autocomplete="off"></label>
-            <label>TVA
-              <select id="productTaxRate">
-                <option value="0.1">10 %</option>
-                <option value="0.2">20 %</option>
-                <option value="0.055">5,5 %</option>
-              </select>
-            </label>
-            <datalist id="categoryList"></datalist>
-            <button type="button" id="saveProductButton">Ajouter au menu</button>
-          </section>
-
-          <section>
-            <h3>Categories</h3>
-            <div class="pill-list" id="settingsCategories"></div>
-          </section>
-
-          <section>
-            <h3>Produits</h3>
-            <div class="settings-products" id="settingsProducts"></div>
-          </section>
-        </div>
-      </form>
-    </dialog>
-
-    <dialog id="tableDialog">
-      <form method="dialog" class="dialog-card table-dialog">
-        <header>
-          <div>
-            <p class="eyebrow">Plan de salle</p>
-            <h2>Modifier la table</h2>
-          </div>
-          <button class="icon-button" value="cancel" aria-label="Fermer">×</button>
-        </header>
-        <div class="table-editor">
-          <label>Nom<input id="tableNameInput" autocomplete="off"></label>
-          <label>Couverts<input id="tableSeatsInput" type="number" min="1" max="30" step="1"></label>
-          <label>Zone<input id="tableZoneInput" list="zoneList" autocomplete="off"></label>
-          <datalist id="zoneList"></datalist>
-        </div>
-        <div class="dialog-actions">
-          <button type="button" id="saveTableButton">Enregistrer</button>
-          <button class="primary" value="cancel">Fermer</button>
-        </div>
-      </form>
-    </dialog>
-
-    <dialog id="lineDialog">
-      <form method="dialog" class="dialog-card line-dialog">
-        <header>
-          <div>
-            <p class="eyebrow">Correction ticket</p>
-            <h2 id="lineDialogTitle">Modifier la ligne</h2>
-          </div>
-          <button class="icon-button" value="cancel" aria-label="Fermer">×</button>
-        </header>
-        <div class="line-editor">
-          <label>Prix unitaire<input id="linePriceInput" type="number" min="0" step="0.01"></label>
-          <label>Remise ligne %<input id="lineDiscountInput" type="number" min="0" max="100" step="1"></label>
-          <label>Note cuisine<input id="lineNoteInput" autocomplete="off"></label>
-        </div>
-        <div class="dialog-actions">
-          <button type="button" class="danger-text" id="deleteLineButton">Supprimer</button>
-          <button type="button" id="saveLineButton">Enregistrer</button>
-          <button class="primary" value="cancel">Fermer</button>
-        </div>
-      </form>
-    </dialog>
-
-    <dialog id="reportDialog">
-      <form method="dialog" class="dialog-card report-dialog">
-        <header>
-          <div>
-            <p class="eyebrow">Rapport Z local</p>
-            <h2>Synthese du jour</h2>
-          </div>
-          <button class="icon-button" value="cancel" aria-label="Fermer">×</button>
-        </header>
-        <pre id="reportContent"></pre>
-        <button class="primary" value="cancel">Fermer</button>
-      </form>
-    </dialog>
-
-    <dialog id="receiptDialog">
-      <form method="dialog" class="dialog-card receipt-dialog">
-        <header>
-          <div>
-            <p class="eyebrow">Ticket 80 mm</p>
-            <h2>Apercu ticket</h2>
-          </div>
-          <button class="icon-button" value="cancel" aria-label="Fermer">×</button>
-        </header>
-        <section class="receipt receipt-preview" id="receiptPreview"></section>
-        <div class="dialog-actions">
-          <button type="button" id="printReceiptButton">Imprimer</button>
-          <button class="primary" value="cancel">Fermer</button>
-        </div>
-      </form>
-    </dialog>
-
-    <template id="receiptTemplate">
-      <section class="receipt">
-        <h1>Le Comptoir</h1>
-        <p class="receipt-meta"></p>
-        <div class="receipt-lines"></div>
-        <div class="receipt-total"></div>
-      </section>
-    </template>
-
-    <script src="app.js"></script>
+    <main>
+      <video controls playsinline preload="metadata" poster="">
+        <source src="faire-part.mp4" type="video/mp4">
+        Votre navigateur ne peut pas lire cette video.
+      </video>
+      <p class="fallback">
+        Si la video ne se lance pas, <a href="faire-part.mp4">ouvrez-la directement</a>.
+      </p>
+    </main>
   </body>
 </html>
